@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   // 入力したメールアドレス・パスワード
   String email = '';
   String password = '';
+  String user = '';
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +84,29 @@ class _LoginPageState extends State<LoginPage> {
                       // ユーザー登録に失敗した場合
                       setState(() {
                         infoText = "登録に失敗しました：${e.toString()}";
+                      });
+                    }
+                  },
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                // ユーザー登録ボタン
+                child: OutlinedButton(
+                  child: Text('ログイン'),
+                  onPressed: () async {
+                    try {
+                      final FirebaseAuth auth = FirebaseAuth.instance;
+                      await auth.signInWithEmailAndPassword(email: email, password: password);
+                      await Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) {
+                          return ProfileApp();
+                        }),
+                      );
+                    } catch (e) {
+                      // ユーザー登録に失敗した場合
+                      setState(() {
+                        infoText = "ログインに失敗しました：${e.toString()}";
                       });
                     }
                   },
